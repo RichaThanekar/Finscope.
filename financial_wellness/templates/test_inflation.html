@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Test Inflation Chart</title>
+    <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+</head>
+<body>
+    <h1>Inflation Forecast Test</h1>
+    <div id="chart" style="width:100%;height:600px;"></div>
+    <div id="status"></div>
+    
+    <script>
+        console.log('Starting test...');
+        
+        fetch('/api/inflation-data')
+            .then(response => {
+                console.log('Response status:', response.status);
+                return response.json();
+            })
+            .then(data => {
+                console.log('Data received:', data);
+                document.getElementById('status').innerHTML = `
+                    <p>Success: ${data.success}</p>
+                    <p>Latest: ${data.latest_actual}</p>
+                    <p>Forecast: ${data.avg_forecast}</p>
+                    <p>Trend: ${data.trend}</p>
+                    <p>Data Points: ${data.data_points}</p>
+                `;
+                
+                if (data.success && data.graph) {
+                    console.log('Parsing graph...');
+                    const graphData = JSON.parse(data.graph);
+                    console.log('Graph data:', graphData);
+                    console.log('Traces:', graphData.data.length);
+                    
+                    Plotly.newPlot('chart', graphData.data, graphData.layout);
+                    console.log('Chart plotted!');
+                } else {
+                    document.getElementById('status').innerHTML += '<p style="color:red;">No graph data</p>';
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                document.getElementById('status').innerHTML = `<p style="color:red;">Error: ${error.message}</p>`;
+            });
+    </script>
+</body>
+</html>

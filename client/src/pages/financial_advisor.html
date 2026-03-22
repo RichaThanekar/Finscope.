@@ -1,0 +1,846 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Financial Advisory Tool</title>
+    <!-- <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}"> -->
+</head>
+<style>
+    /* Global Styles */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+html, body {
+    width: 100%;
+    height: 100%;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Helvetica Neue', sans-serif;
+    background: white;
+    display: flex;
+    flex-direction: column;
+    color: #2c3e50;
+}
+
+.container {
+    width: 100%;
+    height: 100%;
+    margin: 0;
+    background: white;
+    border-radius: 0;
+    box-shadow: none;
+    overflow: hidden;
+    border: none;
+    display: flex;
+    flex-direction: column;
+}
+
+/* Header Styles */
+header {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    padding: 2px;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+    width: 100%;
+}
+
+header::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 400px;
+    height: 100%;
+    background: rgba(255, 255, 255, 0.1);
+    transform: skewX(-20deg);
+    pointer-events: none;
+}
+
+.header-content {
+    position: relative;
+    z-index: 1;
+}
+
+.main-header {
+    font-size: 2.2rem;
+    font-weight: 700;
+    color: white;
+    margin: 0 0 8px 0;
+    letter-spacing: -0.5px;
+}
+
+.header-subtitle {
+    color: rgba(255, 255, 255, 0.9);
+    font-size: 1rem;
+    font-weight: 400;
+    margin: 0;
+}
+
+/* Main Content Layout */
+.main-content {
+    display: grid;
+    grid-template-columns: 380px 1fr;
+    gap: 0;
+    flex: 1;
+    overflow: hidden;
+}
+
+/* Sidebar Styles */
+.sidebar {
+    background: linear-gradient(180deg, #f8f9fb 0%, #f0f2f7 100%);
+    padding: 30px;
+    overflow-y: auto;
+    border-right: 1px solid #e8ecf1;
+    height: 100%;
+}
+
+.sidebar-header {
+    margin-bottom: 30px;
+}
+
+.sidebar-header h2 {
+    color: #2c3e50;
+    font-size: 1.3rem;
+    font-weight: 700;
+    margin: 0;
+}
+
+.form-section {
+    margin-bottom: 28px;
+}
+
+.form-section h3 {
+    color: #667eea;
+    font-size: 0.95rem;
+    font-weight: 700;
+    margin-bottom: 16px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.form-group {
+    margin-bottom: 16px;
+}
+
+.form-group label {
+    display: block;
+    font-weight: 600;
+    color: #2c3e50;
+    margin-bottom: 6px;
+    font-size: 0.9rem;
+}
+
+.form-group input[type="number"],
+.form-group select {
+    width: 100%;
+    padding: 10px 12px;
+    border: 1.5px solid #d5dce3;
+    border-radius: 6px;
+    font-size: 0.95rem;
+    transition: all 0.3s ease;
+    background: white;
+    color: #2c3e50;
+}
+
+.form-group input[type="number"]:focus,
+.form-group select:focus {
+    outline: none;
+    border-color: #667eea;
+    box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+}
+
+.input-wrapper {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.form-group input[type="range"] {
+    flex: 1;
+    cursor: pointer;
+    accent-color: #667eea;
+    height: 5px;
+}
+
+.range-value {
+    display: inline-block;
+    width: 50px;
+    font-weight: 700;
+    color: #667eea;
+    text-align: center;
+    background: rgba(102, 126, 234, 0.1);
+    padding: 4px 8px;
+    border-radius: 4px;
+}
+
+/* Button Styles */
+.btn {
+    padding: 12px 24px;
+    border: none;
+    border-radius: 8px;
+    font-size: 0.95rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    width: 100%;
+    margin-top: 10px;
+    text-align: center;
+    letter-spacing: 0.3px;
+}
+
+.btn-primary {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+}
+
+.btn-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
+}
+
+.btn-success {
+    background: linear-gradient(135deg, #34d399 0%, #10b981 100%);
+    color: white;
+    box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
+}
+
+.btn-success:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(16, 185, 129, 0.4);
+}
+
+.btn-secondary {
+    background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+    color: white;
+    box-shadow: 0 4px 12px rgba(245, 158, 11, 0.3);
+    margin-top: 15px;
+}
+
+.btn-secondary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(245, 158, 11, 0.4);
+}
+
+/* Results Area */
+.results-area {
+    padding: 40px;
+    overflow-y: auto;
+    background: #f5f7fb;
+    height: 100%;
+}
+
+/* Loading Spinner */
+#loading {
+    text-align: center;
+    padding: 60px 40px;
+}
+
+.spinner {
+    border: 4px solid #e8ecf1;
+    border-top: 4px solid #667eea;
+    border-radius: 50%;
+    width: 50px;
+    height: 50px;
+    animation: spin 1s linear infinite;
+    margin: 0 auto 20px;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+/* Section Styles */
+.section {
+    margin-bottom: 40px;
+}
+
+.section-header {
+    font-size: 1.4rem;
+    font-weight: 700;
+    color: #2c3e50;
+    margin-bottom: 24px;
+    padding-bottom: 12px;
+    border-bottom: 2px solid #667eea;
+    display: inline-block;
+}
+
+/* Metrics Row */
+.metrics-row {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 20px;
+    margin-bottom: 20px;
+}
+
+/* Metric Card */
+.metric-card {
+    background: white;
+    padding: 24px;
+    border-radius: 10px;
+    border: 1.5px solid #e8ecf1;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+}
+
+.metric-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 4px;
+    background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform 0.3s ease;
+}
+
+.metric-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
+    border-color: #667eea;
+}
+
+.metric-card:hover::before {
+    transform: scaleX(1);
+}
+
+.metric-icon {
+    font-size: 1.8rem;
+    margin-bottom: 8px;
+}
+
+.metric-card h4 {
+    color: #64748b;
+    font-size: 0.85rem;
+    font-weight: 600;
+    margin-bottom: 12px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.metric-value {
+    font-size: 2rem;
+    font-weight: 700;
+    color: #667eea;
+    margin: 8px 0;
+}
+
+.metric-subtitle {
+    color: #94a3b8;
+    font-size: 0.85rem;
+    font-weight: 500;
+}
+
+/* Info and Alert Cards */
+.info-card {
+    background: linear-gradient(135deg, #f0f4ff 0%, #f8f9ff 100%);
+    padding: 18px;
+    border-radius: 8px;
+    border-left: 4px solid #667eea;
+    margin-top: 15px;
+    color: #2c3e50;
+}
+
+.warning {
+    background: linear-gradient(135deg, #fef3c7 0%, #fef9e7 100%);
+    padding: 18px;
+    border-radius: 8px;
+    border-left: 4px solid #f59e0b;
+    margin: 15px 0;
+    color: #92400e;
+}
+
+.recommendation {
+    background: linear-gradient(135deg, #d1fae5 0%, #ecfdf5 100%);
+    padding: 18px;
+    border-radius: 8px;
+    border-left: 4px solid #10b981;
+    margin: 12px 0;
+    color: #065f46;
+}
+
+/* Score Card */
+.score-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 20px;
+}
+
+.score-card {
+    background: white;
+    border: 1.5px solid #e8ecf1;
+    border-radius: 10px;
+    padding: 24px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+}
+
+.score-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 14px 0;
+    border-bottom: 1px solid #f0f0f0;
+}
+
+.score-item:last-child {
+    border-bottom: none;
+}
+
+.score-item.overall {
+    background: linear-gradient(135deg, #f0f4ff 0%, #f8f9ff 100%);
+    padding: 16px;
+    margin-top: 10px;
+    border-radius: 8px;
+    font-size: 1.1rem;
+    border-bottom: none;
+}
+
+.score-item span {
+    color: #64748b;
+    font-weight: 600;
+}
+
+.score-item strong {
+    color: #667eea;
+    font-size: 1.1rem;
+    font-weight: 700;
+}
+
+/* Recommendations List */
+#recommendations-list .recommendation {
+    margin-bottom: 12px;
+}
+
+/* Future Planning */
+.future-planning p {
+    margin: 12px 0;
+    color: #2c3e50;
+}
+
+.increase {
+    color: #f59e0b;
+    font-weight: 700;
+    font-size: 1.2rem;
+    margin-top: 8px;
+}
+
+.timeline {
+    color: #2c3e50;
+}
+
+.timeline p {
+    margin-top: 12px;
+    margin-bottom: 6px;
+    font-weight: 600;
+}
+
+.timeline ul {
+    margin-left: 20px;
+    margin-top: 6px;
+}
+
+.timeline li {
+    margin: 6px 0;
+    color: #64748b;
+}
+
+/* Report Content */
+.report-content {
+    background: #f8f9fa;
+    padding: 24px;
+    border-radius: 10px;
+    border: 1px solid #e8ecf1;
+    margin: 20px 0;
+    white-space: pre-wrap;
+    font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+    line-height: 1.6;
+    font-size: 0.9rem;
+    color: #2c3e50;
+}
+
+/* Footer */
+footer {
+    margin-top: 40px;
+    padding-top: 24px;
+    border-top: 1px solid #e8ecf1;
+    text-align: center;
+    color: #94a3b8;
+    font-size: 0.9rem;
+}
+
+/* Responsive Design */
+@media (max-width: 1200px) {
+    .main-content {
+        grid-template-columns: 340px 1fr;
+    }
+    
+    .results-area {
+        padding: 30px;
+    }
+}
+
+@media (max-width: 968px) {
+    .main-content {
+        grid-template-columns: 1fr;
+    }
+    
+    .sidebar {
+        max-height: none;
+        border-right: none;
+        border-bottom: 1px solid #e8ecf1;
+    }
+    
+    .results-area {
+        max-height: none;
+    }
+    
+    .metrics-row {
+        grid-template-columns: 1fr;
+    }
+}
+
+@media (max-width: 600px) {
+    .main-header {
+        font-size: 1.8rem;
+    }
+    
+    .header-subtitle {
+        font-size: 0.9rem;
+    }
+    
+    header {
+        padding: 30px 20px;
+    }
+    
+    .sidebar {
+        padding: 20px;
+    }
+    
+    .results-area {
+        padding: 20px;
+    }
+    
+    .metric-card {
+        padding: 18px;
+    }
+    
+    .metric-value {
+        font-size: 1.5rem;
+    }
+    
+}
+</style>
+<body>
+    <div class="container">
+        <header>
+            <div class="header-content">
+                <h1 class="main-header">Financial Advisory Tool</h1>
+                <p class="header-subtitle">Personalized Insurance & Financial Planning Analysis</p>
+            </div>
+        </header>
+
+        <div class="main-content">
+            <!-- Sidebar for inputs -->
+            <aside class="sidebar">
+                <div class="sidebar-header">
+                    <h2>Client Information</h2>
+                </div>
+                
+                <form id="financialForm">
+                    <div class="form-section">
+                        <h3>Personal Details</h3>
+                        <div class="form-group">
+                            <label for="age">Age</label>
+                            <div class="input-wrapper">
+                                <input type="range" id="age" name="age" min="22" max="65" value="32" oninput="updateValue('age')">
+                                <span class="range-value" id="age-value">32</span>
+                            </div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="marital_status">Marital Status</label>
+                            <select id="marital_status" name="marital_status">
+                                <option value="Single">Single</option>
+                                <option value="Married" selected>Married</option>
+                            </select>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="dependents">Number of Dependents</label>
+                            <input type="number" id="dependents" name="dependents" min="0" max="10" value="2">
+                        </div>
+                    </div>
+
+                    <div class="form-section">
+                        <h3>Financial Information</h3>
+                        <div class="form-group">
+                            <label for="annual_income">Annual Income (₹)</label>
+                            <input type="number" id="annual_income" name="annual_income" value="800000" step="50000">
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="monthly_expenses">Monthly Expenses (₹)</label>
+                            <input type="number" id="monthly_expenses" name="monthly_expenses" value="40000" step="5000">
+                        </div>
+                    </div>
+
+                    <div class="form-section">
+                        <h3>Current Insurance</h3>
+                        <div class="form-group">
+                            <label for="current_coverage">Current Life Insurance Coverage (₹)</label>
+                            <input type="number" id="current_coverage" name="current_coverage" value="5000000" step="500000">
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="annual_premium">Annual Premium (₹)</label>
+                            <input type="number" id="annual_premium" name="annual_premium" value="25000" step="5000">
+                        </div>
+                    </div>
+
+                    <div class="form-section">
+                        <h3>Riders</h3>
+                        <div class="form-group">
+                            <label for="accident_cover">Accident Death Benefit (₹)</label>
+                            <input type="number" id="accident_cover" name="accident_cover" value="1000000" step="100000">
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="critical_illness">Critical Illness Cover (₹)</label>
+                            <input type="number" id="critical_illness" name="critical_illness" value="500000" step="100000">
+                        </div>
+                    </div>
+
+                    <div class="form-section">
+                        <h3>Outstanding Debts</h3>
+                        <div class="form-group">
+                            <label for="home_loan">Home Loan Outstanding (₹)</label>
+                            <input type="number" id="home_loan" name="home_loan" value="2000000" step="100000">
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="other_debts">Other Debts (₹)</label>
+                            <input type="number" id="other_debts" name="other_debts" value="0" step="50000">
+                        </div>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary">Analyze</button>
+                </form>
+            </aside>
+                        </div>
+                    </div> -->
+
+                    <button type="submit" class="btn btn-primary">Analyze</button>
+                </form>
+            </aside>
+
+            <!-- Main Results Area -->
+            <main class="results-area">
+                <div id="loading" style="display: none;">
+                    <div class="spinner"></div>
+                    <p>Analyzing your financial data...</p>
+                </div>
+
+                <div id="results" style="display: none;">
+                    <!-- Coverage Analysis -->
+                    <section class="section">
+                        <h2 class="section-header">Coverage Analysis</h2>
+                        <div class="metrics-row">
+                            <div class="metric-card">
+                                <div class="metric-icon">🛡️</div>
+                                <h4>Current Coverage</h4>
+                                <p class="metric-value" id="current-coverage-display">₹0</p>
+                                <p class="metric-subtitle" id="coverage-multiplier">0x income</p>
+                            </div>
+                            <div class="metric-card">
+                                <div class="metric-icon">📋</div>
+                                <h4>Recommended Min</h4>
+                                <p class="metric-value" id="recommended-min">₹0</p>
+                                <p class="metric-subtitle">10x income</p>
+                            </div>
+                            <div class="metric-card">
+                                <div class="metric-icon">⚠️</div>
+                                <h4>Coverage Gap</h4>
+                                <p class="metric-value" id="coverage-gap">₹0</p>
+                                <p class="metric-subtitle" id="coverage-status">Status</p>
+                            </div>
+                        </div>
+                        <div id="coverage-alert"></div>
+                    </section>
+
+                    <!-- Premium Analysis -->
+                    <section class="section">
+                        <h2 class="section-header">Premium Analysis</h2>
+                        <div class="metrics-row">
+                            <div class="metric-card">
+                                <div class="metric-icon">💳</div>
+                                <h4>Current Premium</h4>
+                                <p class="metric-value" id="current-premium-display">₹0</p>
+                                <p class="metric-subtitle" id="premium-percentage">0% of income</p>
+                            </div>
+                            <div class="metric-card">
+                                <div class="metric-icon">💰</div>
+                                <h4>Max Affordable</h4>
+                                <p class="metric-value" id="max-affordable">₹0</p>
+                                <p class="metric-subtitle">10% of income</p>
+                            </div>
+                            <div class="metric-card">
+                                <div class="metric-icon">📈</div>
+                                <h4>Additional Capacity</h4>
+                                <p class="metric-value" id="additional-capacity">₹0</p>
+                            </div>
+                        </div>
+                        <div id="premium-info" class="info-card"></div>
+                    </section>
+
+                    <!-- Rider Analysis -->
+                    <section class="section">
+                        <h2 class="section-header">Rider Analysis</h2>
+                        <div class="metrics-row">
+                            <div class="metric-card">
+                                <div class="metric-icon">🔒</div>
+                                <h4>Critical Illness (Current)</h4>
+                                <p class="metric-value" id="ci-current">₹0</p>
+                            </div>
+                            <div class="metric-card">
+                                <div class="metric-icon">✓</div>
+                                <h4>Critical Illness (Recommended)</h4>
+                                <p class="metric-value" id="ci-recommended">₹0</p>
+                                <p class="metric-subtitle">3x income</p>
+                            </div>
+                        </div>
+                        <div class="metrics-row">
+                            <div class="metric-card">
+                                <div class="metric-icon">🚗</div>
+                                <h4>Accident Cover (Current)</h4>
+                                <p class="metric-value" id="accident-current">₹0</p>
+                            </div>
+                            <div class="metric-card">
+                                <div class="metric-icon">📊</div>
+                                <h4>CI Coverage Gap</h4>
+                                <p class="metric-value" id="ci-gap">₹0</p>
+                            </div>
+                        </div>
+                    </section>
+
+                    <!-- Financial Health Score -->
+                    <section class="section">
+                        <h2 class="section-header">Financial Health Score</h2>
+                        <div class="score-grid">
+                            <div class="score-card">
+                                <div class="score-item">
+                                    <span>Coverage Score</span>
+                                    <strong id="coverage-score">0/10</strong>
+                                </div>
+                                <div class="score-item">
+                                    <span>Premium Score</span>
+                                    <strong id="premium-score">0/10</strong>
+                                </div>
+                                <div class="score-item">
+                                    <span>Debt Management</span>
+                                    <strong id="debt-score">0/10</strong>
+                                </div>
+                                <div class="score-item">
+                                    <span>Savings Rate</span>
+                                    <strong id="savings-score">0/10</strong>
+                                </div>
+                                <div class="score-item overall">
+                                    <span>Overall Score</span>
+                                    <strong id="overall-score">0/10</strong>
+                                </div>
+                            </div>
+
+                            <div class="score-card">
+                                <h3 style="margin-bottom: 1.5rem; color: #2c3e50;">Key Metrics</h3>
+                                <div class="score-item">
+                                    <span>Monthly Savings</span>
+                                    <strong id="monthly-savings">₹0</strong>
+                                </div>
+                                <div class="score-item">
+                                    <span>Savings Rate</span>
+                                    <strong id="savings-rate">0%</strong>
+                                </div>
+                                <div class="score-item">
+                                    <span>Debt-to-Income</span>
+                                    <strong id="debt-to-income">0x</strong>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+
+                    <!-- Recommendations -->
+                    <section class="section">
+                        <h2 class="section-header">Personalized Recommendations</h2>
+                        <div id="recommendations-list"></div>
+                    </section>
+
+                    <!-- Future Planning -->
+                    <section class="section">
+                        <h2 class="section-header">Future Planning</h2>
+                        <div class="metrics-row">
+                            <div class="metric-card">
+                                <h4>Inflation Impact (10 years)</h4>
+                                <div class="future-planning">
+                                    <p><strong>Current Annual Expenses:</strong> <span id="current-expenses">₹0</span></p>
+                                    <p><strong>Future Annual Expenses:</strong> <span id="future-expenses">₹0</span></p>
+                                    <p class="increase" id="expense-increase">+0%</p>
+                                </div>
+                            </div>
+                            <div class="metric-card">
+                                <h4>Action Timeline</h4>
+                                <div class="timeline">
+                                    <p><strong>Next 30 Days:</strong></p>
+                                    <ul>
+                                        <li>Review and increase life insurance coverage</li>
+                                        <li>Start building emergency fund</li>
+                                    </ul>
+                                    <p><strong>Next 3 Months:</strong></p>
+                                    <ul>
+                                        <li>Enhance critical illness cover</li>
+                                        <li>Optimize debt repayment strategy</li>
+                                    </ul>
+                                    <p><strong>Next 6 Months:</strong></p>
+                                    <ul>
+                                        <li>Set up systematic investments</li>
+                                        <li>Annual insurance review process</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+
+                    <!-- Generate Report Button -->
+                    <section class="section">
+                        <button id="generateReport" class="btn btn-success">Generate Detailed Summary Report</button>
+                    </section>
+
+                    <!-- Detailed Report Display -->
+                    <section id="detailed-report" style="display: none;">
+                        <h2 class="section-header">Detailed Financial Analysis Report</h2>
+                        <div id="report-content" class="report-content"></div>
+                        <button id="downloadReport" class="btn btn-secondary">Download Report as Markdown</button>
+                    </section>
+                </div>
+
+                <footer>
+                    <p><em>This analysis is based on standard financial planning principles. Please consult a certified financial planner for personalized advice.</em></p>
+                </footer>
+            </main>
+        </div>
+    </div>
+
+    <script src="{{ url_for('static', filename='js/script.js') }}"></script>
+</body>
+</html>

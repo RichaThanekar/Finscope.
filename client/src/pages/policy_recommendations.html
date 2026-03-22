@@ -1,0 +1,633 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Policy Recommendations</title>
+    <!-- <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}"> -->
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background: #f8f9fa;
+            color: #1a1a1a;
+            line-height: 1.6;
+        }
+        
+        .top-bar {
+            background: #ffffff;
+            border-bottom: 1px solid #e5e7eb;
+            padding: 0 32px;
+            height: 64px;
+            display: flex;
+            align-items: center;
+        }
+        
+        .back-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            color: #4b5563;
+            text-decoration: none;
+            font-size: 14px;
+            font-weight: 500;
+            transition: color 0.2s;
+        }
+        
+        .back-link:hover {
+            color: #1f2937;
+        }
+        
+        .page-header {
+            background: #ffffff;
+            border-bottom: 1px solid #e5e7eb;
+            padding: 32px;
+        }
+        
+        .page-header h1 {
+            font-size: 28px;
+            font-weight: 600;
+            color: #1a1a1a;
+            margin-bottom: 8px;
+        }
+        
+        .page-header p {
+            font-size: 15px;
+            color: #6b7280;
+            font-weight: 400;
+        }
+        
+        .main-grid {
+            display: grid;
+            grid-template-columns: 380px 1fr;
+            gap: 24px;
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 32px;
+        }
+        
+        .input-panel {
+            background: #ffffff;
+            border: 1px solid #e5e7eb;
+            border-radius: 8px;
+            padding: 24px;
+            height: fit-content;
+        }
+        
+        .results-panel {
+            background: #ffffff;
+            border: 1px solid #e5e7eb;
+            border-radius: 8px;
+            padding: 32px;
+            min-height: 600px;
+        }
+        
+        .form-section {
+            margin-bottom: 32px;
+        }
+        
+        .form-section:last-of-type {
+            margin-bottom: 24px;
+        }
+        
+        .form-section h3 {
+            font-size: 14px;
+            font-weight: 600;
+            color: #1a1a1a;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 16px;
+            padding-bottom: 8px;
+            border-bottom: 1px solid #e5e7eb;
+        }
+        
+        .form-group {
+            margin-bottom: 16px;
+        }
+        
+        .form-group label {
+            display: block;
+            font-size: 13px;
+            font-weight: 500;
+            color: #374151;
+            margin-bottom: 6px;
+        }
+        
+        .form-group input,
+        .form-group select {
+            width: 100%;
+            padding: 10px 12px;
+            border: 1px solid #d1d5db;
+            border-radius: 6px;
+            font-size: 14px;
+            color: #1a1a1a;
+            background: #ffffff;
+            transition: border-color 0.2s, box-shadow 0.2s;
+        }
+        
+        .form-group input:focus,
+        .form-group select:focus {
+            outline: none;
+            border-color: #2563eb;
+            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+        }
+        
+        .btn-primary {
+            background: #2563eb;
+            color: white;
+            padding: 12px 24px;
+            border: none;
+            border-radius: 6px;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            width: 100%;
+            transition: background 0.2s;
+        }
+        
+        .btn-primary:hover {
+            background: #1d4ed8;
+        }
+        
+        .btn-primary:active {
+            background: #1e40af;
+        }
+        
+        .welcome-section {
+            text-align: center;
+            padding: 48px 24px;
+        }
+        
+        .welcome-section h2 {
+            font-size: 24px;
+            font-weight: 600;
+            color: #1a1a1a;
+            margin-bottom: 12px;
+        }
+        
+        .welcome-section p {
+            font-size: 15px;
+            color: #6b7280;
+            max-width: 560px;
+            margin: 0 auto 32px;
+        }
+        
+        .feature-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 16px;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+        
+        .feature-item {
+            background: #f9fafb;
+            border: 1px solid #e5e7eb;
+            border-radius: 6px;
+            padding: 20px;
+            text-align: left;
+        }
+        
+        .feature-item h4 {
+            font-size: 14px;
+            font-weight: 600;
+            color: #1a1a1a;
+            margin-bottom: 4px;
+        }
+        
+        .feature-item p {
+            font-size: 13px;
+            color: #6b7280;
+            margin: 0;
+        }
+        
+        .loading {
+            text-align: center;
+            padding: 80px 24px;
+        }
+        
+        .spinner {
+            border: 3px solid #f3f4f6;
+            border-top: 3px solid #2563eb;
+            border-radius: 50%;
+            width: 48px;
+            height: 48px;
+            animation: spin 0.8s linear infinite;
+            margin: 0 auto 24px;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        .loading p {
+            font-size: 14px;
+            color: #6b7280;
+        }
+        
+        .risk-assessment {
+            background: #f9fafb;
+            border: 1px solid #e5e7eb;
+            border-radius: 8px;
+            padding: 24px;
+            margin-bottom: 32px;
+        }
+        
+        .risk-assessment-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 16px;
+        }
+        
+        .risk-assessment-header h3 {
+            font-size: 14px;
+            font-weight: 600;
+            color: #374151;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        
+        .risk-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 6px 12px;
+            border-radius: 4px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+        
+        .risk-badge.low {
+            background: #d1fae5;
+            color: #065f46;
+        }
+        
+        .risk-badge.medium {
+            background: #fef3c7;
+            color: #92400e;
+        }
+        
+        .risk-badge.high {
+            background: #fee2e2;
+            color: #991b1b;
+        }
+        
+        .risk-score-display {
+            font-size: 48px;
+            font-weight: 700;
+            color: #1a1a1a;
+            line-height: 1;
+        }
+        
+        .risk-score-label {
+            font-size: 13px;
+            color: #6b7280;
+            margin-top: 4px;
+        }
+        
+        .recommendation-section {
+            margin-bottom: 32px;
+        }
+        
+        .section-title {
+            font-size: 18px;
+            font-weight: 600;
+            color: #1a1a1a;
+            margin-bottom: 16px;
+            padding-bottom: 12px;
+            border-bottom: 2px solid #e5e7eb;
+        }
+        
+        .recommendation-content h2 {
+            font-size: 16px;
+            font-weight: 600;
+            color: #1a1a1a;
+            margin-top: 28px;
+            margin-bottom: 12px;
+        }
+        
+        .recommendation-content h3 {
+            font-size: 14px;
+            font-weight: 600;
+            color: #374151;
+            margin-top: 20px;
+            margin-bottom: 10px;
+        }
+        
+        .recommendation-content p {
+            font-size: 14px;
+            color: #4b5563;
+            line-height: 1.7;
+            margin-bottom: 12px;
+        }
+        
+        .recommendation-content ul {
+            margin-left: 20px;
+            margin-bottom: 16px;
+        }
+        
+        .recommendation-content li {
+            font-size: 14px;
+            color: #4b5563;
+            line-height: 1.7;
+            margin: 6px 0;
+        }
+        
+        .recommendation-content strong {
+            color: #1a1a1a;
+            font-weight: 600;
+        }
+        
+        .info-card {
+            background: #f9fafb;
+            border: 1px solid #e5e7eb;
+            border-radius: 6px;
+            padding: 16px;
+            margin: 16px 0;
+        }
+        
+        .info-card-title {
+            font-size: 13px;
+            font-weight: 600;
+            color: #374151;
+            margin-bottom: 8px;
+        }
+        
+        .info-card-value {
+            font-size: 20px;
+            font-weight: 600;
+            color: #1a1a1a;
+        }
+        
+        @media (max-width: 968px) {
+            .main-grid {
+                grid-template-columns: 1fr;
+                padding: 16px;
+            }
+            
+            .page-header {
+                padding: 24px 16px;
+            }
+            
+            .feature-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    
+    <div class="top-bar">
+        <a href="/" class="back-link">
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+                <path d="M10 12L6 8L10 4" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+            Back to Dashboard
+        </a>
+    </div>
+    
+    <div class="page-header">
+        <h1>Policy Recommendations</h1>
+        <p>Get personalized insurance policy suggestions based on your profile and risk assessment</p>
+    </div>
+    
+    <div class="main-grid">
+        
+        <!-- Input Panel -->
+        <div class="input-panel">
+            <form id="policyForm">
+                <div class="form-section">
+                    <h3>Personal Information</h3>
+                    
+                    <div class="form-group">
+                        <label for="age">Age</label>
+                        <input type="number" id="age" name="age" min="18" max="80" value="30" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="gender">Gender</label>
+                        <select id="gender" name="gender">
+                            <option value="Male">Male</option>
+                            <option value="Female">Female</option>
+                            <option value="Other">Other</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="marital_status">Marital Status</label>
+                        <select id="marital_status" name="marital_status">
+                            <option value="Single">Single</option>
+                            <option value="Married">Married</option>
+                            <option value="Divorced">Divorced</option>
+                            <option value="Widowed">Widowed</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="occupation">Occupation</label>
+                        <select id="occupation" name="occupation">
+                            <option value="Salaried">Salaried</option>
+                            <option value="Self-Employed">Self-Employed</option>
+                            <option value="Business Owner">Business Owner</option>
+                            <option value="Professional">Professional</option>
+                            <option value="Student">Student</option>
+                            <option value="Retired">Retired</option>
+                        </select>
+                    </div>
+                </div>
+                
+                <div class="form-section">
+                    <h3>Financial Details</h3>
+                    
+                    <div class="form-group">
+                        <label for="income">Annual Income (₹)</label>
+                        <input type="number" id="income" name="income" min="50000" step="50000" value="500000" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="policy_type">Insurance Type</label>
+                        <select id="policy_type" name="policy_type">
+                            <option value="Term Life Insurance">Term Life Insurance</option>
+                            <option value="Health Insurance">Health Insurance</option>
+                            <option value="Family Floater Plan">Family Floater Plan</option>
+                            <option value="Critical Illness Cover">Critical Illness Cover</option>
+                            <option value="Personal Accident Insurance">Personal Accident Insurance</option>
+                            <option value="Group Health Insurance">Group Health Insurance</option>
+                            <option value="Group Life Insurance">Group Life Insurance</option>
+                        </select>
+                    </div>
+                </div>
+                
+                <div class="form-section">
+                    <h3>Risk Factors</h3>
+                    
+                    <div class="form-group">
+                        <label for="smoker">Smoking Status</label>
+                        <select id="smoker" name="smoker">
+                            <option value="No">Non-smoker</option>
+                            <option value="Yes">Smoker</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="driving_record">Driving Record</label>
+                        <select id="driving_record" name="driving_record">
+                            <option value="Clean">Clean</option>
+                            <option value="Minor Violations">Minor Violations</option>
+                            <option value="Major Violations">Major Violations</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="disease">Pre-existing Condition</label>
+                        <select id="disease" name="disease">
+                            <option value="None">None</option>
+                            <option value="Diabetes">Diabetes</option>
+                            <option value="Hypertension">Hypertension</option>
+                            <option value="Asthma">Asthma</option>
+                            <option value="Heart Disease">Heart Disease</option>
+                            <option value="Thyroid">Thyroid</option>
+                            <option value="Obesity">Obesity</option>
+                            <option value="Other">Other</option>
+                        </select>
+                    </div>
+                </div>
+                
+                <button type="submit" class="btn-primary">Get Recommendations</button>
+            </form>
+        </div>
+        
+        <!-- Results Panel -->
+        <div class="results-panel">
+            <div id="welcomeMessage">
+                <div class="welcome-section">
+                    <h2>Welcome to Policy Recommendations</h2>
+                    <p>
+                        Complete the form to receive a comprehensive risk assessment and personalized 
+                        insurance policy recommendations tailored to your profile.
+                    </p>
+                    
+                    <div class="feature-grid">
+                        <div class="feature-item">
+                            <h4>Risk Assessment</h4>
+                            <p>Comprehensive analysis of your insurance risk profile</p>
+                        </div>
+                        <div class="feature-item">
+                            <h4>Policy Matching</h4>
+                            <p>Personalized recommendations based on your needs</p>
+                        </div>
+                        <div class="feature-item">
+                            <h4>Coverage Analysis</h4>
+                            <p>Suggested coverage amounts and premium budgets</p>
+                        </div>
+                        <div class="feature-item">
+                            <h4>Action Plan</h4>
+                            <p>Clear next steps for policy selection and purchase</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div id="loading" style="display: none;" class="loading">
+                <div class="spinner"></div>
+                <p>Analyzing your profile and generating recommendations...</p>
+            </div>
+            
+            <div id="results" style="display: none;">
+                <div class="risk-assessment">
+                    <div class="risk-assessment-header">
+                        <h3>Risk Assessment</h3>
+                        <div class="risk-badge" id="riskBadge">--</div>
+                    </div>
+                    <div class="risk-score-display" id="riskScore">--</div>
+                    <div class="risk-score-label">Risk Score (0-100)</div>
+                </div>
+                
+                <div class="recommendation-section">
+                    <h2 class="section-title">Personalized Recommendations</h2>
+                    <div class="recommendation-content" id="recommendationContent"></div>
+                </div>
+            </div>
+        </div>
+        
+    </div>
+    
+    <script>
+        document.getElementById('policyForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            // Show loading
+            document.getElementById('welcomeMessage').style.display = 'none';
+            document.getElementById('loading').style.display = 'block';
+            document.getElementById('results').style.display = 'none';
+            
+            // Get form data
+            const formData = new FormData(e.target);
+            const data = {};
+            for (let [key, value] of formData.entries()) {
+                data[key] = value;
+            }
+            
+            try {
+                const response = await fetch('/api/policy-recommend', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(data)
+                });
+                
+                const result = await response.json();
+                
+                if (result.success) {
+                    // Hide loading, show results
+                    document.getElementById('loading').style.display = 'none';
+                    document.getElementById('results').style.display = 'block';
+                    
+                    // Update risk score
+                    const riskScore = result.risk_score;
+                    document.getElementById('riskScore').textContent = riskScore.toFixed(1);
+                    
+                    const riskBadge = document.getElementById('riskBadge');
+                    if (riskScore < 30) {
+                        riskBadge.textContent = 'Low Risk';
+                        riskBadge.className = 'risk-badge low';
+                    } else if (riskScore < 60) {
+                        riskBadge.textContent = 'Medium Risk';
+                        riskBadge.className = 'risk-badge medium';
+                    } else {
+                        riskBadge.textContent = 'High Risk';
+                        riskBadge.className = 'risk-badge high';
+                    }
+                    
+                    // Format and display recommendation
+                    const recommendation = result.recommendation
+                        .replace(/\n/g, '<br>')
+                        .replace(/##\s*(.+)/g, '<h2>$1</h2>')
+                        .replace(/###\s*(.+)/g, '<h3>$1</h3>')
+                        .replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>')
+                        .replace(/\*(.+?)\*/g, '<em>$1</em>');
+                    
+                    document.getElementById('recommendationContent').innerHTML = recommendation;
+                } else {
+                    alert('Error: ' + result.error);
+                    document.getElementById('loading').style.display = 'none';
+                    document.getElementById('welcomeMessage').style.display = 'block';
+                }
+            } catch (error) {
+                alert('Error: ' + error.message);
+                document.getElementById('loading').style.display = 'none';
+                document.getElementById('welcomeMessage').style.display = 'block';
+            }
+        });
+    </script>
+    
+</body>
+</html>
