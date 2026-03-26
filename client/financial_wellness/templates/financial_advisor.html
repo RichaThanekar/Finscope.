@@ -1,0 +1,823 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>💰 Financial Advisory Tool</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <style>
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+        :root {
+            --ink: #0d1117;
+            --ink-2: #3b4252;
+            --ink-3: #6b7384;
+            --border: #e4e8f0;
+            --border-light: #f0f3f8;
+            --surface: #ffffff;
+            --surface-2: #f7f9fc;
+            --surface-3: #eef2f8;
+            --accent: #2563eb;
+            --accent-light: #eff4ff;
+            --accent-dark: #1d4ed8;
+            --green: #059669;
+            --green-light: #ecfdf5;
+            --red: #dc2626;
+            --red-light: #fef2f2;
+            --amber: #d97706;
+            --amber-light: #fffbeb;
+            --shadow-sm: 0 1px 3px rgba(13,17,23,0.06), 0 1px 2px rgba(13,17,23,0.04);
+            --shadow-md: 0 4px 12px rgba(13,17,23,0.08), 0 2px 4px rgba(13,17,23,0.04);
+            --shadow-lg: 0 12px 32px rgba(13,17,23,0.10), 0 4px 8px rgba(13,17,23,0.06);
+            --radius: 10px;
+            --radius-sm: 6px;
+            --radius-lg: 16px;
+        }
+
+        html { font-size: 15px; }
+
+        body {
+            font-family: 'DM Sans', system-ui, sans-serif;
+            background: var(--surface-2);
+            color: var(--ink);
+            line-height: 1.6;
+            min-height: 100vh;
+        }
+
+        /* ── TOP NAV ── */
+        .topbar {
+            background: var(--surface);
+            border-bottom: 1px solid var(--border);
+            padding: 0 2rem;
+            height: 58px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        .topbar-brand {
+            display: flex;
+            align-items: center;
+            gap: 0.6rem;
+            font-size: 1.05rem;
+            font-weight: 700;
+            color: var(--ink);
+            letter-spacing: -0.02em;
+        }
+        .topbar-brand .dot {
+            width: 8px; height: 8px;
+            background: var(--accent);
+            border-radius: 50%;
+            display: inline-block;
+        }
+        .topbar-badge {
+            font-size: 0.7rem;
+            font-weight: 600;
+            letter-spacing: 0.05em;
+            text-transform: uppercase;
+            color: var(--ink-3);
+            background: var(--surface-3);
+            border: 1px solid var(--border);
+            border-radius: 20px;
+            padding: 2px 10px;
+        }
+
+        /* ── PAGE SHELL ── */
+        .page {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 2rem 2rem 4rem;
+        }
+
+        /* ── PAGE HEADING ── */
+        .page-heading {
+            margin-bottom: 1.75rem;
+        }
+        .page-heading h1 {
+            font-size: 1.6rem;
+            font-weight: 700;
+            letter-spacing: -0.03em;
+            color: var(--ink);
+            line-height: 1.2;
+        }
+        .page-heading p {
+            font-size: 0.88rem;
+            color: var(--ink-3);
+            margin-top: 0.25rem;
+        }
+
+        /* ── FORM PANEL ── */
+        .form-panel {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-lg);
+            box-shadow: var(--shadow-sm);
+            padding: 1.5rem 1.75rem;
+            margin-bottom: 2rem;
+        }
+        .form-panel-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 1.25rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid var(--border-light);
+        }
+        .form-panel-title {
+            font-size: 0.8rem;
+            font-weight: 600;
+            letter-spacing: 0.07em;
+            text-transform: uppercase;
+            color: var(--ink-3);
+        }
+
+        #financialForm {
+            display: flex;
+            flex-direction: column;
+            gap: 1.25rem;
+        }
+
+        .form-row {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.75rem 1.25rem;
+            align-items: flex-end;
+        }
+
+        .form-group-label {
+            font-size: 0.72rem;
+            font-weight: 600;
+            letter-spacing: 0.06em;
+            text-transform: uppercase;
+            color: var(--ink-3);
+            margin-bottom: 0.6rem;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            min-width: 140px;
+            flex: 1;
+        }
+        .form-group label {
+            font-size: 0.78rem;
+            font-weight: 500;
+            color: var(--ink-2);
+            margin-bottom: 0.35rem;
+            white-space: nowrap;
+        }
+        .form-group input[type="number"],
+        .form-group select {
+            height: 38px;
+            border: 1px solid var(--border);
+            border-radius: var(--radius-sm);
+            padding: 0 0.65rem;
+            font-family: inherit;
+            font-size: 0.88rem;
+            color: var(--ink);
+            background: var(--surface);
+            outline: none;
+            transition: border-color 0.15s, box-shadow 0.15s;
+            width: 100%;
+        }
+        .form-group input[type="number"]:focus,
+        .form-group select:focus {
+            border-color: var(--accent);
+            box-shadow: 0 0 0 3px rgba(37,99,235,0.10);
+        }
+
+        /* Range slider */
+        .range-wrapper {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        .form-group input[type="range"] {
+            flex: 1;
+            height: 4px;
+            appearance: none;
+            background: var(--border);
+            border-radius: 4px;
+            outline: none;
+            cursor: pointer;
+        }
+        .form-group input[type="range"]::-webkit-slider-thumb {
+            appearance: none;
+            width: 16px; height: 16px;
+            border-radius: 50%;
+            background: var(--accent);
+            border: 2px solid #fff;
+            box-shadow: 0 1px 4px rgba(37,99,235,0.3);
+            cursor: pointer;
+        }
+        .range-val {
+            font-size: 0.82rem;
+            font-weight: 600;
+            color: var(--accent);
+            font-family: 'DM Mono', monospace;
+            min-width: 30px;
+            text-align: right;
+        }
+
+        /* Section divider line in form */
+        .form-divider {
+            border: none;
+            border-top: 1px dashed var(--border);
+            margin: 0.25rem 0;
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.4rem;
+            border: none;
+            border-radius: var(--radius-sm);
+            font-family: inherit;
+            font-size: 0.88rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.15s ease;
+            padding: 0 1.25rem;
+            height: 38px;
+            white-space: nowrap;
+        }
+        .btn-primary {
+            background: var(--accent);
+            color: #fff;
+            box-shadow: 0 1px 4px rgba(37,99,235,0.25);
+        }
+        .btn-primary:hover {
+            background: var(--accent-dark);
+            box-shadow: 0 3px 10px rgba(37,99,235,0.3);
+            transform: translateY(-1px);
+        }
+        .btn-primary:active { transform: translateY(0); }
+        .btn-success {
+            background: var(--green);
+            color: #fff;
+            box-shadow: 0 1px 4px rgba(5,150,105,0.2);
+        }
+        .btn-success:hover { background: #047857; transform: translateY(-1px); }
+        .btn-secondary {
+            background: var(--surface-3);
+            color: var(--ink-2);
+            border: 1px solid var(--border);
+        }
+        .btn-secondary:hover { background: var(--border); }
+
+        /* ── LOADING ── */
+        #loading {
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 3rem;
+            gap: 1rem;
+        }
+        .spinner {
+            width: 36px; height: 36px;
+            border: 3px solid var(--border);
+            border-top-color: var(--accent);
+            border-radius: 50%;
+            animation: spin 0.75s linear infinite;
+        }
+        @keyframes spin { to { transform: rotate(360deg); } }
+        #loading p {
+            font-size: 0.88rem;
+            color: var(--ink-3);
+            font-weight: 500;
+        }
+
+        /* ── RESULTS ── */
+        #results { display: none; }
+
+        .section {
+            margin-bottom: 1.75rem;
+        }
+
+        .section-header {
+            font-size: 0.78rem;
+            font-weight: 700;
+            letter-spacing: 0.07em;
+            text-transform: uppercase;
+            color: var(--ink-3);
+            margin-bottom: 0.9rem;
+            display: flex;
+            align-items: center;
+            gap: 0.4rem;
+        }
+        .section-header::after {
+            content: '';
+            flex: 1;
+            height: 1px;
+            background: var(--border-light);
+        }
+
+        /* ── METRIC CARDS ── */
+        .metrics-row {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        .metric-card {
+            flex: 1;
+            min-width: 180px;
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 1.1rem 1.25rem;
+            box-shadow: var(--shadow-sm);
+            transition: box-shadow 0.15s;
+        }
+        .metric-card:hover { box-shadow: var(--shadow-md); }
+        .metric-card h4 {
+            font-size: 0.75rem;
+            font-weight: 600;
+            letter-spacing: 0.04em;
+            color: var(--ink-3);
+            text-transform: uppercase;
+            margin-bottom: 0.5rem;
+        }
+        .metric-value {
+            font-size: 1.45rem;
+            font-weight: 700;
+            letter-spacing: -0.03em;
+            color: var(--ink);
+            font-family: 'DM Mono', monospace;
+            line-height: 1.2;
+        }
+        .metric-subtitle {
+            font-size: 0.74rem;
+            color: var(--ink-3);
+            margin-top: 0.25rem;
+        }
+
+        /* ── ALERTS ── */
+        #coverage-alert > *,
+        #premium-info > * { border-radius: var(--radius-sm) !important; }
+
+        .alert {
+            padding: 0.75rem 1rem;
+            border-radius: var(--radius-sm);
+            font-size: 0.85rem;
+            font-weight: 500;
+            margin-top: 0.75rem;
+            border-left: 3px solid;
+        }
+        .alert-danger { background: var(--red-light); border-color: var(--red); color: #7f1d1d; }
+        .alert-warning { background: var(--amber-light); border-color: var(--amber); color: #78350f; }
+        .alert-success { background: var(--green-light); border-color: var(--green); color: #064e3b; }
+        .info-card {
+            background: var(--accent-light);
+            border: 1px solid #bfdbfe;
+            border-radius: var(--radius-sm);
+            padding: 0.75rem 1rem;
+            font-size: 0.85rem;
+            color: #1e3a8a;
+            margin-top: 0.75rem;
+        }
+
+        /* ── SCORES ── */
+        .sidebar-scores { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; }
+        @media (max-width: 640px) { .sidebar-scores { grid-template-columns: 1fr; } }
+
+        .score-card {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 1rem 1.25rem;
+            box-shadow: var(--shadow-sm);
+        }
+        .score-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0.55rem 0;
+            font-size: 0.85rem;
+            border-bottom: 1px solid var(--border-light);
+        }
+        .score-item:last-child { border-bottom: none; }
+        .score-item span { color: var(--ink-2); }
+        .score-item strong {
+            font-family: 'DM Mono', monospace;
+            font-size: 0.88rem;
+            color: var(--ink);
+        }
+        .score-item.overall {
+            margin-top: 0.25rem;
+            padding-top: 0.65rem;
+            border-top: 2px solid var(--border);
+        }
+        .score-item.overall span { font-weight: 700; color: var(--ink); }
+        .score-item.overall strong { font-size: 1rem; color: var(--accent); }
+
+        /* ── RECOMMENDATIONS ── */
+        #recommendations-list {
+            display: flex;
+            flex-direction: column;
+            gap: 0.65rem;
+        }
+        .recommendation-item {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-left: 3px solid var(--accent);
+            border-radius: var(--radius-sm);
+            padding: 0.85rem 1.1rem;
+            font-size: 0.87rem;
+            color: var(--ink-2);
+            box-shadow: var(--shadow-sm);
+            line-height: 1.55;
+        }
+
+        /* ── FUTURE PLANNING ── */
+        .future-planning p, .timeline p {
+            font-size: 0.85rem;
+            margin-bottom: 0.4rem;
+            color: var(--ink-2);
+        }
+        .future-planning p strong, .timeline p strong { color: var(--ink); }
+        .increase {
+            font-family: 'DM Mono', monospace;
+            font-size: 0.85rem;
+            color: var(--amber);
+            font-weight: 600;
+        }
+        .timeline ul {
+            padding-left: 1.1rem;
+            margin-bottom: 0.6rem;
+        }
+        .timeline ul li {
+            font-size: 0.83rem;
+            color: var(--ink-3);
+            margin-bottom: 0.2rem;
+        }
+
+        /* ── REPORT ── */
+        #detailed-report {
+            display: none;
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 1.5rem 1.75rem;
+            margin-top: 1rem;
+            box-shadow: var(--shadow-sm);
+        }
+        .report-content {
+            font-size: 0.875rem;
+            line-height: 1.7;
+            color: var(--ink-2);
+            white-space: pre-wrap;
+            font-family: 'DM Mono', monospace;
+            background: var(--surface-2);
+            border: 1px solid var(--border-light);
+            border-radius: var(--radius-sm);
+            padding: 1.25rem;
+            margin: 1rem 0;
+            overflow-x: auto;
+        }
+
+        /* ── FOOTER ── */
+        footer {
+            text-align: center;
+            padding: 2rem 0 0;
+            font-size: 0.78rem;
+            color: var(--ink-3);
+        }
+
+        /* ── RESPONSIVE ── */
+        @media (max-width: 900px) {
+            .form-row { flex-direction: column; gap: 0.6rem; }
+            .form-group { min-width: 100%; }
+            .metrics-row { flex-direction: column; }
+            .metric-card { min-width: 100%; }
+        }
+        @media (max-width: 600px) {
+            .page { padding: 1.25rem 1rem 3rem; }
+            .form-panel { padding: 1.1rem 1rem; }
+            .topbar { padding: 0 1rem; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- TOP BAR -->
+    <header class="topbar">
+        <div class="topbar-brand">
+            <span class="dot"></span>
+            FinAdvisor
+        </div>
+        <span class="topbar-badge">India Edition</span>
+    </header>
+
+    <div class="page">
+
+        <!-- PAGE HEADING -->
+        <div class="page-heading">
+            <h1>Financial Advisory Dashboard</h1>
+            <p>Enter your details below to receive a comprehensive insurance and financial health analysis.</p>
+        </div>
+
+        <!-- FORM PANEL -->
+        <div class="form-panel">
+            <div class="form-panel-header">
+                <span class="form-panel-title">Client Information</span>
+            </div>
+
+            <form id="financialForm">
+
+                <!-- Row 1: Personal -->
+                <div>
+                    <div class="form-group-label">Personal Details</div>
+                    <div class="form-row">
+                        <div class="form-group" style="max-width:200px;">
+                            <label for="age">Age</label>
+                            <div class="range-wrapper">
+                                <input type="range" id="age" name="age" min="22" max="65" value="32" oninput="updateValue('age')">
+                                <span class="range-val" id="age-value">32</span>
+                            </div>
+                        </div>
+                        <div class="form-group" style="max-width:160px;">
+                            <label for="marital_status">Marital Status</label>
+                            <select id="marital_status" name="marital_status">
+                                <option value="Single">Single</option>
+                                <option value="Married" selected>Married</option>
+                            </select>
+                        </div>
+                        <div class="form-group" style="max-width:140px;">
+                            <label for="dependents">Dependents</label>
+                            <input type="number" id="dependents" name="dependents" min="0" max="10" value="2">
+                        </div>
+                    </div>
+                </div>
+
+                <hr class="form-divider">
+
+                <!-- Row 2: Financial -->
+                <div>
+                    <div class="form-group-label">Financial Information</div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="annual_income">Annual Income (₹)</label>
+                            <input type="number" id="annual_income" name="annual_income" value="800000" step="50000">
+                        </div>
+                        <div class="form-group">
+                            <label for="monthly_expenses">Monthly Expenses (₹)</label>
+                            <input type="number" id="monthly_expenses" name="monthly_expenses" value="40000" step="5000">
+                        </div>
+                    </div>
+                </div>
+
+                <hr class="form-divider">
+
+                <!-- Row 3: Insurance -->
+                <div>
+                    <div class="form-group-label">Current Insurance</div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="current_coverage">Life Insurance Coverage (₹)</label>
+                            <input type="number" id="current_coverage" name="current_coverage" value="5000000" step="500000">
+                        </div>
+                        <div class="form-group">
+                            <label for="annual_premium">Annual Premium (₹)</label>
+                            <input type="number" id="annual_premium" name="annual_premium" value="25000" step="5000">
+                        </div>
+                        <div class="form-group">
+                            <label for="accident_cover">Accident Death Benefit (₹)</label>
+                            <input type="number" id="accident_cover" name="accident_cover" value="1000000" step="100000">
+                        </div>
+                        <div class="form-group">
+                            <label for="critical_illness">Critical Illness Cover (₹)</label>
+                            <input type="number" id="critical_illness" name="critical_illness" value="500000" step="100000">
+                        </div>
+                    </div>
+                </div>
+
+                <hr class="form-divider">
+
+                <!-- Row 4: Debts + CTA -->
+                <div>
+                    <div class="form-group-label">Outstanding Debts</div>
+                    <div class="form-row" style="align-items: flex-end;">
+                        <div class="form-group">
+                            <label for="home_loan">Home Loan Outstanding (₹)</label>
+                            <input type="number" id="home_loan" name="home_loan" value="2000000" step="100000">
+                        </div>
+                        <div class="form-group">
+                            <label for="other_debts">Other Debts (₹)</label>
+                            <input type="number" id="other_debts" name="other_debts" value="0" step="50000">
+                        </div>
+                        <div class="form-group" style="flex: 0 0 auto; min-width: unset;">
+                            <button type="submit" class="btn btn-primary" style="height:38px; padding: 0 1.5rem;">
+                                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+                                Analyze
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+            </form>
+        </div>
+
+        <!-- LOADING -->
+        <div id="loading" style="display:none; flex-direction:column; align-items:center; padding:3rem; gap:1rem;">
+            <div class="spinner"></div>
+            <p style="font-size:0.88rem; color:var(--ink-3); font-weight:500;">Analyzing your financial data…</p>
+        </div>
+
+        <!-- RESULTS -->
+        <div id="results" style="display:none;">
+
+            <!-- Coverage Analysis -->
+            <section class="section">
+                <h2 class="section-header">🛡️ Coverage Analysis</h2>
+                <div class="metrics-row">
+                    <div class="metric-card">
+                        <h4>Current Coverage</h4>
+                        <p class="metric-value" id="current-coverage-display">₹0</p>
+                        <p class="metric-subtitle" id="coverage-multiplier">0x income</p>
+                    </div>
+                    <div class="metric-card">
+                        <h4>Recommended Min</h4>
+                        <p class="metric-value" id="recommended-min">₹0</p>
+                        <p class="metric-subtitle">10x income</p>
+                    </div>
+                    <div class="metric-card">
+                        <h4>Coverage Gap</h4>
+                        <p class="metric-value" id="coverage-gap">₹0</p>
+                        <p class="metric-subtitle" id="coverage-status">Status</p>
+                    </div>
+                </div>
+                <div id="coverage-alert"></div>
+            </section>
+
+            <!-- Premium Analysis -->
+            <section class="section">
+                <h2 class="section-header">💳 Premium Analysis</h2>
+                <div class="metrics-row">
+                    <div class="metric-card">
+                        <h4>Current Premium</h4>
+                        <p class="metric-value" id="current-premium-display">₹0</p>
+                        <p class="metric-subtitle" id="premium-percentage">0% of income</p>
+                    </div>
+                    <div class="metric-card">
+                        <h4>Max Affordable</h4>
+                        <p class="metric-value" id="max-affordable">₹0</p>
+                        <p class="metric-subtitle">10% of income</p>
+                    </div>
+                    <div class="metric-card">
+                        <h4>Additional Capacity</h4>
+                        <p class="metric-value" id="additional-capacity">₹0</p>
+                    </div>
+                </div>
+                <div id="premium-info" class="info-card"></div>
+            </section>
+
+            <!-- Rider Analysis -->
+            <section class="section">
+                <h2 class="section-header">🔒 Rider Analysis</h2>
+                <div class="metrics-row">
+                    <div class="metric-card">
+                        <h4>Critical Illness (Current)</h4>
+                        <p class="metric-value" id="ci-current">₹0</p>
+                    </div>
+                    <div class="metric-card">
+                        <h4>Critical Illness (Recommended)</h4>
+                        <p class="metric-value" id="ci-recommended">₹0</p>
+                        <p class="metric-subtitle">3x income</p>
+                    </div>
+                </div>
+                <div class="metrics-row" style="margin-top:1rem;">
+                    <div class="metric-card">
+                        <h4>Accident Cover (Current)</h4>
+                        <p class="metric-value" id="accident-current">₹0</p>
+                    </div>
+                    <div class="metric-card">
+                        <h4>CI Coverage Gap</h4>
+                        <p class="metric-value" id="ci-gap">₹0</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Financial Health Score -->
+            <section class="section sidebar-scores">
+                <div>
+                    <h2 class="section-header">📊 Financial Health Scores</h2>
+                    <div class="score-card">
+                        <div class="score-item">
+                            <span>Coverage Score</span>
+                            <strong id="coverage-score">0/10</strong>
+                        </div>
+                        <div class="score-item">
+                            <span>Premium Score</span>
+                            <strong id="premium-score">0/10</strong>
+                        </div>
+                        <div class="score-item">
+                            <span>Debt Management</span>
+                            <strong id="debt-score">0/10</strong>
+                        </div>
+                        <div class="score-item">
+                            <span>Savings Rate</span>
+                            <strong id="savings-score">0/10</strong>
+                        </div>
+                        <div class="score-item overall">
+                            <span>Overall Score</span>
+                            <strong id="overall-score">0/10</strong>
+                        </div>
+                    </div>
+                </div>
+                <div>
+                    <h2 class="section-header">📈 Key Metrics</h2>
+                    <div class="score-card">
+                        <div class="score-item">
+                            <span>Monthly Savings</span>
+                            <strong id="monthly-savings">₹0</strong>
+                        </div>
+                        <div class="score-item">
+                            <span>Savings Rate</span>
+                            <strong id="savings-rate">0%</strong>
+                        </div>
+                        <div class="score-item">
+                            <span>Debt-to-Income</span>
+                            <strong id="debt-to-income">0x</strong>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Recommendations -->
+            <section class="section">
+                <h2 class="section-header">💡 Personalized Recommendations</h2>
+                <div id="recommendations-list"></div>
+            </section>
+
+            <!-- Future Planning -->
+            <section class="section">
+                <h2 class="section-header">📈 Future Planning</h2>
+                <div class="metrics-row">
+                    <div class="metric-card">
+                        <h4>Inflation Impact (10 years)</h4>
+                        <div class="future-planning" style="margin-top:0.5rem;">
+                            <p><strong>Current Annual Expenses:</strong> <span id="current-expenses">₹0</span></p>
+                            <p><strong>Future Annual Expenses:</strong> <span id="future-expenses">₹0</span></p>
+                            <p class="increase" id="expense-increase">+0%</p>
+                        </div>
+                    </div>
+                    <div class="metric-card">
+                        <h4>Action Timeline</h4>
+                        <div class="timeline" style="margin-top:0.5rem;">
+                            <p><strong>Next 30 Days:</strong></p>
+                            <ul>
+                                <li>Review and increase life insurance coverage</li>
+                                <li>Start building emergency fund</li>
+                            </ul>
+                            <p><strong>Next 3 Months:</strong></p>
+                            <ul>
+                                <li>Enhance critical illness cover</li>
+                                <li>Optimize debt repayment strategy</li>
+                            </ul>
+                            <p><strong>Next 6 Months:</strong></p>
+                            <ul>
+                                <li>Set up systematic investments</li>
+                                <li>Annual insurance review process</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Generate Report -->
+            <section class="section">
+                <button id="generateReport" class="btn btn-success">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
+                    Generate Detailed Summary Report
+                </button>
+            </section>
+
+            <!-- Detailed Report Display -->
+            <section id="detailed-report" style="display:none;">
+                <h2 class="section-header">📄 Detailed Financial Analysis Report</h2>
+                <div id="report-content" class="report-content"></div>
+                <button id="downloadReport" class="btn btn-secondary">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                    Download Report as Markdown
+                </button>
+            </section>
+
+        </div>
+
+        <footer>
+            <p><em>This analysis is based on standard financial planning principles. Please consult a certified financial planner for personalized advice.</em></p>
+        </footer>
+
+    </div>
+
+    <script src="{{ url_for('static', filename='js/script.js') }}"></script>
+</body>
+</html>
